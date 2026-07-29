@@ -1,7 +1,5 @@
 # Dep_Cloud_Secu — TP2 : Déploiement multi-cloud sécurisé (volet AWS)
 
-Dépôt du TP2 du module **IaC & Gestion des configurations** — Mastère Cybersécurité 4A, BC Design Systems.
-
 Ce projet déploie sur AWS, via Terraform, un serveur web nginx accessible publiquement avec un état distant chiffré, un accès SSH restreint, et les contrôles de sécurité imposés (IMDSv2, disque chiffré). Il démontre également la détection d'une dérive de configuration (configuration drift) via `terraform plan`.
 
 ## 📁 Structure du dépôt
