@@ -1,4 +1,3 @@
-```markdown
 # Dep_Cloud_Secu — TP2 : Déploiement multi-cloud sécurisé (volet AWS)
 
 Dépôt du TP2 du module **IaC & Gestion des configurations** — Mastère Cybersécurité 4A, BC Design Systems.
@@ -57,4 +56,3 @@ Une modification manuelle du Security Group dans la console AWS (ouverture du po
 ## ✍️ Auteur
 
 Anne-Laure S. — Mastère Cybersécurité & Cloud Computing
-```
