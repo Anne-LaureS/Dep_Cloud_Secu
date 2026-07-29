@@ -1,21 +1,39 @@
 \documentclass[11pt,a4paper]{article}
 
-\usepackage[utf8]{inputenc}
+% Encodage et typographie
 \usepackage[T1]{fontenc}
+\usepackage{lmodern}
+
+% Mise en page
 \usepackage[margin=2.3cm]{geometry}
-\usepackage{xcolor}
-\usepackage{titlesec}
-\usepackage{booktabs}
-\usepackage{array}
-\usepackage{longtable}
-\usepackage{enumitem}
-\usepackage{fancyhdr}
-\usepackage{hyperref}
-\usepackage{listings}
 \usepackage{parskip}
+
+% Couleurs et éléments graphiques
+\usepackage{xcolor}
 \usepackage{graphicx}
 \usepackage{caption}
+
+% Tableaux
+\usepackage{booktabs}
+\usepackage{longtable}
+
+% Listes et code
+\usepackage{enumitem}
+\usepackage{listings}
+
+% En-têtes / pieds de page
+\usepackage{fancyhdr}
+
+% Liens PDF
+\usepackage{hyperref}
+
+% Encadrés
 \usepackage{framed}
+
+
+% ------------------------------------------------
+% Couleurs
+% ------------------------------------------------
 
 \definecolor{navy}{HTML}{1F3864}
 \definecolor{grey}{HTML}{595959}
@@ -23,190 +41,618 @@
 \definecolor{goldbg}{HTML}{FFF4E0}
 \definecolor{codebg}{HTML}{F5F5F5}
 \definecolor{codeborder}{HTML}{CCCCCC}
+\definecolor{shadecolor}{HTML}{FFF4E0}
 
-\titleformat{\section}{\large\bfseries\color{navy}}{\thesection}{0.6em}{}
-\titleformat{\subsection}{\normalsize\bfseries\color{navy}}{\thesubsection}{0.6em}{}
 
-\captionsetup{font=small,labelfont={bf,color=navy},skip=4pt}
+% ------------------------------------------------
+% Style titres
+% ------------------------------------------------
+
+\titleformat{\section}
+{\large\bfseries\color{navy}}
+{\thesection}
+{0.6em}
+{}
+
+\titleformat{\subsection}
+{\normalsize\bfseries\color{navy}}
+{\thesubsection}
+{0.6em}
+{}
+
+
+% ------------------------------------------------
+% Figures
+% ------------------------------------------------
+
+\captionsetup{
+    font=small,
+    labelfont={bf,color=navy},
+    skip=6pt
+}
+
+
+% ------------------------------------------------
+% Code Terraform / Shell
+% ------------------------------------------------
+
+\lstdefinelanguage{Terraform}{
+    morekeywords={
+        resource,
+        provider,
+        variable,
+        output,
+        module,
+        terraform,
+        backend
+    }
+}
 
 \lstdefinestyle{plain}{
-  backgroundcolor=\color{codebg},
-  basicstyle=\ttfamily\footnotesize,
-  frame=single,
-  rulecolor=\color{codeborder},
-  breaklines=true,
-  columns=fullflexible,
-  xleftmargin=4pt,
-  xrightmargin=4pt,
-  framesep=6pt,
+    backgroundcolor=\color{codebg},
+    basicstyle=\ttfamily\footnotesize,
+    frame=single,
+    rulecolor=\color{codeborder},
+    breaklines=true,
+    columns=fullflexible,
+    xleftmargin=4pt,
+    xrightmargin=4pt,
+    framesep=6pt,
+    showstringspaces=false
 }
-\lstset{style=plain}
+
+\lstset{
+    style=plain,
+    language=Terraform
+}
+
+
+% ------------------------------------------------
+% Pied de page
+% ------------------------------------------------
 
 \pagestyle{fancy}
-\fancyhf{}
-\renewcommand{\headrulewidth}{0pt}
-\fancyfoot[C]{\small\color{grey}\thepage}
 
-\hypersetup{colorlinks=true, urlcolor=navy, linkcolor=navy}
+\fancyhf{}
+
+\renewcommand{\headrulewidth}{0pt}
+
+\fancyfoot[C]{
+    \small\color{grey}\thepage
+}
+
+
+% ------------------------------------------------
+% Hyperliens
+% ------------------------------------------------
+
+\hypersetup{
+    colorlinks=true,
+    urlcolor=navy,
+    linkcolor=navy,
+    citecolor=navy
+}
+
+
+% ------------------------------------------------
+% Réglages globaux
+% ------------------------------------------------
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+
+\renewcommand{\arraystretch}{1.25}
+
+
+% ------------------------------------------------
+% Commandes personnalisées
+% ------------------------------------------------
 
 \newcommand{\screenshot}[3]{%
 \begin{figure}[h!]
-  \centering
-  \includegraphics[width=#2\linewidth]{img/#1}
-  \caption{#3}
+    \centering
+    \includegraphics[width=#2\linewidth]{img/#1}
+    \caption{#3}
 \end{figure}
 }
 
-% Bandeau "LIVRABLE n"
+
+% Bandeau LIVRABLE
+
 \newcommand{\livrable}[2]{%
-\begin{leftbar}
-\colorbox{goldbg}{\parbox{\dimexpr\linewidth-2\fboxsep}{%
-\textbf{\color{gold}LIVRABLE #1 --- }\textbf{\color{navy}#2}}}
-\end{leftbar}
-\vspace{4pt}
+\begin{framed}
+\noindent
+\colorbox{goldbg}{
+\parbox{\dimexpr\linewidth-2\fboxsep}{
+\textbf{\color{gold}LIVRABLE #1 --- }
+\textbf{\color{navy}#2}
+}}
+\end{framed}
+\vspace{6pt}
 }
-\definecolor{shadecolor}{HTML}{FFF4E0}
+
+
+% ------------------------------------------------
+% Informations document
+% ------------------------------------------------
 
 \title{
-  {\color{navy}\Huge\textbf{TP2 --- Rapport}}\\[0.4em]
-  {\Large\color{grey} Déploiement multi-cloud sécurisé}\\[0.6em]
-  {\small\itshape\color{grey} BC Design Systems · Mastère Cybersécurité 4A · IaC \& Gestion des configurations}
+    {\color{navy}\Huge\textbf{TP2 --- Rapport}}\\[0.4em]
+    {\Large\color{grey} Déploiement multi-cloud sécurisé}\\[0.6em]
+    {\small\itshape\color{grey}
+    BC Design Systems · Mastère Cybersécurité 4A ·
+    IaC \& Gestion des configurations}
 }
+
 \author{Anne-Laure S.}
-\date{Dépôt : \texttt{Dep\_Cloud\_Secu --- envs/dev-aws}}
+
+\date{
+    Dépôt Git : \texttt{Dep\_Cloud\_Secu}\\
+    Environnement : \texttt{envs/dev-aws}
+}
+
 
 \begin{document}
 
 \maketitle
+
 \thispagestyle{fancy}
+
 
 \begin{leftbar}
 \color{navy}\itshape
-\colorbox{goldbg!40}{\parbox{\dimexpr\linewidth-2\fboxsep}{%
-Périmètre : conformément à la consigne donnée en séance, seul le volet AWS de l'énoncé a été traité (Parties A, B et D). Le volet Azure (Partie C) n'a pas été réalisé.}}
+\colorbox{goldbg}{
+\parbox{\dimexpr\linewidth-2\fboxsep}{
+Périmètre : conformément à la consigne donnée en séance,
+seul le volet AWS de l'énoncé a été traité (Parties A, B et D).
+Le volet Azure (Partie C) n'a pas été réalisé.
+}}
 \end{leftbar}
+
 \vspace{6pt}
+
 
 \section{Socle et état distant (Partie A)}
 
 Un bucket S3 dédié a été créé manuellement pour stocker l'état Terraform :
 
 \begin{itemize}[leftmargin=1.2em]
-  \item Nom : \texttt{tf-state-alaure-747082607185} --- région \texttt{eu-west-3}
-  \item Versioning activé, Block Public Access (4 options activées), chiffrement SSE-S3 (AES256)
+    \item Nom : \texttt{tf-state-alaure-747082607185}
+    --- région \texttt{eu-west-3}
+    \item Versioning activé, Block Public Access (4 options activées),
+    chiffrement SSE-S3 (AES256)
 \end{itemize}
 
-Backend Terraform configuré avec \texttt{encrypt = true} et \texttt{use\_lockfile = true} (Terraform 1.15.8). \texttt{terraform init} exécuté avec succès : \texttt{.terraform.lock.hcl} créé et commité, \texttt{.terraform/} ignoré via \texttt{.gitignore}, de même que \texttt{*.tfstate*}, \texttt{*.tfplan} et \texttt{*.tfvars}.
+Backend Terraform configuré avec
+\texttt{encrypt = true} et
+\texttt{use\_lockfile = true}
+(Terraform 1.15.8).
+
+\texttt{terraform init} exécuté avec succès :
+\texttt{.terraform.lock.hcl} créé et commité,
+\texttt{.terraform/} ignoré via \texttt{.gitignore},
+de même que \texttt{*.tfstate*},
+\texttt{*.tfplan} et
+\texttt{*.tfvars}.
+
 
 \section{Déploiement AWS (Partie B)}
 
-IP publique de l'opérateur récupérée via \texttt{curl -s https://checkip.amazonaws.com} (\texttt{37.70.218.118}), utilisée pour restreindre l'accès SSH.
+IP publique de l'opérateur récupérée via
+\texttt{curl -s https://checkip.amazonaws.com}
+(\texttt{37.70.218.118}),
+utilisée pour restreindre l'accès SSH.
 
 \subsection{Ressources écrites}
 
 \begin{longtable}{@{}p{2.1cm}p{3.1cm}p{5.2cm}p{4.2cm}@{}}
 \toprule
-\textbf{Catégorie} & \textbf{Ressource Terraform} & \textbf{Configuration clé} & \textbf{Rôle} \\
+\textbf{Catégorie} &
+\textbf{Ressource Terraform} &
+\textbf{Configuration clé} &
+\textbf{Rôle} \\
 \midrule
 \endhead
-Réseau & \texttt{aws\_vpc.main} & VPC dédié, CIDR 10.0.0.0/16, DNS support/hostnames activés & Isolation réseau du périmètre TP2 \\
-Réseau & \texttt{aws\_internet\_gateway.main} & Passerelle internet attachée au VPC & Sortie/entrée internet du VPC \\
-Réseau & \texttt{aws\_subnet.public} & Sous-réseau public 10.0.1.0/24, AZ eu-west-3a, IP publique auto & Héberge l'instance web exposée \\
-Réseau & \texttt{aws\_route\_table.public} + association & Route par défaut 0.0.0.0/0 vers l'IGW & Achemine le trafic public depuis/vers le subnet \\
-Sécurité & \texttt{aws\_security\_group.web} & Ingress 80/tcp 0.0.0.0/0 ; ingress 22/tcp IP opérateur /32 ; egress all & Pare-feu : HTTP public, SSH restreint \\
-Calcul & \texttt{aws\_instance.web} & AMI \texttt{ami-0e207c18bb303cc68}, \texttt{t2.micro}, IMDSv2 requis, disque chiffré, user\_data nginx & Serveur web nginx exposé publiquement \\
+
+Réseau &
+\texttt{aws\_vpc.main} &
+VPC dédié, CIDR 10.0.0.0/16,
+DNS support/hostnames activés &
+Isolation réseau du périmètre TP2 \\
+
+Réseau &
+\texttt{aws\_internet\_gateway.main} &
+Passerelle internet attachée au VPC &
+Sortie/entrée internet du VPC \\
+
+Réseau &
+\texttt{aws\_subnet.public} &
+Sous-réseau public 10.0.1.0/24,
+AZ eu-west-3a,
+IP publique auto &
+Héberge l'instance web exposée \\
+
+Réseau &
+\texttt{aws\_route\_table.public}
++ association &
+Route par défaut
+0.0.0.0/0 vers l'IGW &
+Achemine le trafic public
+depuis/vers le subnet \\
+
+Sécurité &
+\texttt{aws\_security\_group.web} &
+Ingress 80/tcp 0.0.0.0/0 ;
+ingress 22/tcp IP opérateur /32 ;
+egress all &
+Pare-feu :
+HTTP public,
+SSH restreint \\
+
+Calcul &
+\texttt{aws\_instance.web} &
+AMI \texttt{ami-0e207c18bb303cc68},
+\texttt{t2.micro},
+IMDSv2 requis,
+disque chiffré,
+\texttt{user\_data nginx} &
+Serveur web nginx exposé publiquement \\
+
 \bottomrule
 \end{longtable}
+
 
 \subsection{Contrôles de sécurité obligatoires}
 
 \begin{itemize}[leftmargin=1.2em]
-  \item IMDSv2 imposé : \texttt{metadata\_options.http\_tokens = "required"}
-  \item Disque racine chiffré : \texttt{root\_block\_device.encrypted = true} (gp3, 8 Go)
-  \item SSH limité à l'IP de l'opérateur en /32, HTTP ouvert au public (0.0.0.0/0)
+    \item IMDSv2 imposé :
+    \texttt{metadata\_options.http\_tokens = "required"}
+
+    \item Disque racine chiffré :
+    \texttt{root\_block\_device.encrypted = true}
+    (gp3, 8 Go)
+
+    \item SSH limité à l'IP de l'opérateur en /32,
+    HTTP ouvert au public (0.0.0.0/0)
 \end{itemize}
 
-\screenshot{image1.png}{0.85}{Security Group \texttt{tp2-web-sg} : HTTP public, SSH restreint à l'IP de l'opérateur.}
+
+\screenshot
+{image1.png}
+{0.85}
+{Security Group \texttt{tp2-web-sg} :
+HTTP public, SSH restreint à l'IP de l'opérateur.}
+
 
 \subsection{Plan et application}
 
 \begin{lstlisting}
 Plan: 7 to add, 0 to change, 0 to destroy.
-(aws_vpc, aws_internet_gateway, aws_subnet, aws_route_table,
- aws_route_table_association, aws_security_group, aws_instance)
+
+(aws_vpc,
+ aws_internet_gateway,
+ aws_subnet,
+ aws_route_table,
+ aws_route_table_association,
+ aws_security_group,
+ aws_instance)
 \end{lstlisting}
 
-AMI (\texttt{ami-0e207c18bb303cc68}) et type d'instance (\texttt{t2.micro}) imposés par la liste blanche d'images validées sur le compte AWS de formation (principe de moindre privilège appliqué au niveau IAM).
 
-\screenshot{image2.png}{0.75}{\texttt{terraform apply} : instance EC2 créée avec succès.}
-\screenshot{image3.png}{0.85}{Output \texttt{instance\_public\_ip} exposé par Terraform.}
+AMI (\texttt{ami-0e207c18bb303cc68})
+et type d'instance (\texttt{t2.micro})
+imposés par la liste blanche d'images validées
+sur le compte AWS de formation
+(principe de moindre privilège appliqué
+au niveau IAM).
 
-Accès HTTP vérifié avec succès dans un navigateur à l'adresse \url{http://52.47.150.93} :
 
-\screenshot{image4.png}{0.85}{Page nginx par défaut accessible publiquement via l'IP de l'instance.}
+\screenshot
+{image2.png}
+{0.75}
+{\texttt{terraform apply} :
+instance EC2 créée avec succès.}
+
+
+\screenshot
+{image3.png}
+{0.85}
+{Output \texttt{instance\_public\_ip}
+exposé par Terraform.}
+
+
+Accès HTTP vérifié avec succès dans un navigateur
+à l'adresse
+\url{http://52.47.150.93} :
+
+
+\screenshot
+{image4.png}
+{0.85}
+{Page nginx par défaut accessible publiquement
+via l'IP de l'instance.}
+
 
 \section{Dérive, état et destruction (Partie D)}
 
+
 \subsection{Dérive introduite manuellement}
 
-Modification manuelle dans la console AWS (EC2 $\rightarrow$ Security Groups $\rightarrow$ \texttt{tp2-web-sg} $\rightarrow$ Inbound rules) : règle SSH (port 22) changée de \texttt{37.70.218.118/32} vers \texttt{0.0.0.0/0}, reproduisant le geste risqué d'un opérateur pressé en production.
 
-\livrable{1}{Le plan de la Partie D, avec interprétation de ce que Terraform a détecté}
+Modification manuelle dans la console AWS
+(EC2 $\rightarrow$ Security Groups $\rightarrow$
+\texttt{tp2-web-sg} $\rightarrow$ Inbound rules) :
 
-\texttt{terraform plan} (sans \texttt{-out}) exécuté après la modification manuelle :
+règle SSH (port 22) changée de
+\texttt{37.70.218.118/32}
+vers
+\texttt{0.0.0.0/0},
+reproduisant le geste risqué d'un opérateur
+pressé en production.
 
-\screenshot{image5.png}{0.7}{\texttt{terraform plan} détectant la dérive sur la règle SSH du Security Group.}
 
-Résultat : \texttt{Plan: 0 to add, 1 to change, 0 to destroy} --- seule la ressource \texttt{aws\_security\_group.web} est concernée.
+\livrable
+{1}
+{Le plan de la Partie D, avec interprétation de ce que Terraform a détecté}
 
-\textbf{Interprétation :} avant toute action, Terraform rafraîchit l'état réel de l'infrastructure via l'API AWS puis le compare à l'état désiré défini dans le code. La modification faite dans la console a contourné Terraform (changement \emph{out-of-band}), créant une dérive de configuration : l'infrastructure réelle ne correspondait plus au code versionné. Terraform a détecté précisément cet écart, limité à la règle ingress du port 22 (la règle HTTP du port 80 reste inchangée), et propose de restaurer la configuration conforme au code. \texttt{terraform plan} ne corrige rien par lui-même : seul un \texttt{terraform apply} réapplique la configuration et referme l'accès SSH. Cela illustre l'intérêt de l'IaC comme garde-fou : toute modification manuelle non tracée reste détectable et réversible tant que le code demeure la source de vérité.
 
-Après vérification, \texttt{terraform apply} a corrigé la dérive :
+\texttt{terraform plan}
+(sans \texttt{-out})
+exécuté après la modification manuelle :
 
-\screenshot{image6.png}{0.75}{\texttt{terraform apply} restaurant la règle SSH restreinte à l'IP autorisée.}
 
-\livrable{2}{Les trois informations sensibles trouvées dans le tfstate, et le contrôle qui protège ce fichier}
+\screenshot
+{image5.png}
+{0.7}
+{\texttt{terraform plan} détectant la dérive
+sur la règle SSH du Security Group.}
 
-Le fichier d'état a été inspecté via \texttt{terraform state pull} :
 
-\screenshot{image7.png}{0.85}{Extraction des champs sensibles du tfstate (IP privée/publique, DNS, user\_data).}
+Résultat :
+\texttt{Plan: 0 to add, 1 to change, 0 to destroy}
+---
+seule la ressource
+\texttt{aws\_security\_group.web}
+est concernée.
+
+\textbf{Interprétation :}
+avant toute action, Terraform rafraîchit l'état réel de
+l'infrastructure via l'API AWS puis le compare à l'état
+désiré défini dans le code.
+
+La modification faite dans la console a contourné Terraform
+(changement \emph{out-of-band}), créant une dérive de
+configuration :
+l'infrastructure réelle ne correspondait plus au code versionné.
+
+Terraform a détecté précisément cet écart, limité à la règle
+ingress du port 22 (la règle HTTP du port 80 reste inchangée),
+et propose de restaurer la configuration conforme au code.
+
+\texttt{terraform plan} ne corrige rien par lui-même :
+seul un
+\texttt{terraform apply}
+réapplique la configuration et referme l'accès SSH.
+
+Cela illustre l'intérêt de l'IaC comme garde-fou :
+toute modification manuelle non tracée reste détectable et
+réversible tant que le code demeure la source de vérité.
+
+
+Après vérification,
+\texttt{terraform apply}
+a corrigé la dérive :
+
+
+\screenshot
+{image6.png}
+{0.75}
+{\texttt{terraform apply} restaurant la règle SSH
+restreinte à l'IP autorisée.}
+
+
+\livrable
+{2}
+{Les trois informations sensibles trouvées dans le tfstate,
+et le contrôle qui protège ce fichier}
+
+
+Le fichier d'état a été inspecté via
+\texttt{terraform state pull} :
+
+
+\screenshot
+{image7.png}
+{0.85}
+{Extraction des champs sensibles du tfstate
+(IP privée/publique, DNS, user\_data).}
+
 
 \begin{itemize}[leftmargin=1.2em]
-  \item \textbf{IP privée (10.0.1.47) et IP publique (52.47.150.93)} : révèlent la topologie réseau interne et exposent une cible atteignable depuis internet.
-  \item \textbf{DNS public complet} (\texttt{ec2-52-47-150-93.eu-west-3.compute.amazonaws.com}) : confirme la région AWS exacte et facilite la reconnaissance en vue d'une attaque.
-  \item \textbf{Champ \texttt{user\_data}} : ici un hash (script nginx sans secret), mais ce champ contient très souvent en conditions réelles des secrets en clair (clés API, mots de passe, tokens).
+
+\item
+\textbf{IP privée (10.0.1.47) et IP publique (52.47.150.93)} :
+révèlent la topologie réseau interne et exposent une cible
+atteignable depuis internet.
+
+\item
+\textbf{DNS public complet}
+(\texttt{ec2-52-47-150-93.eu-west-3.compute.amazonaws.com}) :
+confirme la région AWS exacte et facilite la reconnaissance
+en vue d'une attaque.
+
+\item
+\textbf{Champ \texttt{user\_data}} :
+ici un hash (script nginx sans secret), mais ce champ contient
+très souvent en conditions réelles des secrets en clair
+(clés API, mots de passe, tokens).
+
 \end{itemize}
 
-\textbf{Contrôle qui protège ce fichier :} le tfstate n'est jamais stocké ni commité en local/Git (backend \texttt{s3} distant, \texttt{.gitignore} incluant \texttt{*.tfstate*}). Le bucket S3 dédié applique cumulativement Block Public Access (4 options), chiffrement SSE-S3 (AES256), versioning, et \texttt{encrypt = true} + \texttt{use\_lockfile = true} côté backend. L'accès effectif dépend en dernier ressort des permissions IAM : seul un principal explicitement autorisé peut lire le tfstate.
 
-\screenshot{image8.png}{0.85}{Protections activées sur le bucket S3 de l'état distant.}
+\textbf{Contrôle qui protège ce fichier :}
+le tfstate n'est jamais stocké ni commité en local/Git
+(backend \texttt{s3} distant,
+\texttt{.gitignore} incluant
+\texttt{*.tfstate*}).
 
-\livrable{3}{Tableau comparatif AWS / Azure des ressources écrites, ligne par ligne}
+Le bucket S3 dédié applique cumulativement
+Block Public Access (4 options),
+chiffrement SSE-S3 (AES256),
+versioning,
+et
+\texttt{encrypt = true}
++
+\texttt{use\_lockfile = true}
+côté backend.
 
-Le volet Azure n'ayant pas été traité (consigne du formateur : AWS uniquement), le tableau ci-dessous liste les ressources effectivement écrites côté AWS ; la colonne Azure est renseignée en conséquence.
+L'accès effectif dépend en dernier ressort des permissions IAM :
+seul un principal explicitement autorisé peut lire le tfstate.
+
+
+\screenshot
+{image8.png}
+{0.85}
+{Protections activées sur le bucket S3
+de l'état distant.}
+
+
+
+\livrable
+{3}
+{Tableau comparatif AWS / Azure des ressources écrites,
+ligne par ligne}
+
+
+Le volet Azure n'ayant pas été traité
+(consigne du formateur : AWS uniquement),
+le tableau ci-dessous liste les ressources effectivement
+écrites côté AWS ;
+la colonne Azure est renseignée en conséquence.
+
 
 \begin{longtable}{@{}p{2.3cm}p{5.5cm}p{6cm}@{}}
+
 \toprule
-\textbf{Catégorie} & \textbf{AWS (traité)} & \textbf{Azure} \\
+\textbf{Catégorie} &
+\textbf{AWS (traité)} &
+\textbf{Azure} \\
+
 \midrule
 \endhead
-Réseau & VPC + Internet Gateway + subnet public + route table (\texttt{aws\_vpc}, \texttt{aws\_internet\_gateway}, \texttt{aws\_subnet}, \texttt{aws\_route\_table}) & Non traité --- périmètre du TP limité à AWS sur consigne du formateur \\
-Sécurité réseau & Security Group (HTTP 80 public, SSH 22 restreint /32) & Non traité \\
-Calcul & Instance EC2 t2.micro, AMI imposée, IMDSv2 requis, disque racine chiffré, nginx via user\_data & Non traité \\
-État distant & Backend S3 (bucket versionné, chiffré, Block Public Access) + verrouillage natif (use\_lockfile) & Non traité \\
+
+
+Réseau &
+VPC + Internet Gateway + subnet public
++ route table
+(\texttt{aws\_vpc},
+\texttt{aws\_internet\_gateway},
+\texttt{aws\_subnet},
+\texttt{aws\_route\_table})
+&
+Non traité ---
+périmètre du TP limité à AWS
+sur consigne du formateur
+\\
+
+
+Sécurité réseau &
+Security Group
+(HTTP 80 public,
+SSH 22 restreint /32)
+&
+Non traité
+\\
+
+
+Calcul &
+Instance EC2 t2.micro,
+AMI imposée,
+IMDSv2 requis,
+disque racine chiffré,
+nginx via \texttt{user\_data}
+&
+Non traité
+\\
+
+
+État distant &
+Backend S3
+(bucket versionné,
+chiffré,
+Block Public Access)
++
+verrouillage natif
+(\texttt{use\_lockfile})
+&
+Non traité
+\\
+
+
 \bottomrule
+
 \end{longtable}
 
-\livrable{4}{Question de fond --- IMDSv2 et l'affaire Capital One (mars 2019) --- 5 lignes maximum}
 
-IMDSv2 (\texttt{http\_tokens = "required"}) aurait bloqué la technique exacte utilisée : la faille SSRF n'autorisait que des requêtes GET, incapables de forger le token de session exigé par une requête PUT préalable pour interroger le service de métadonnées et en extraire les identifiants IAM. En revanche, IMDSv2 n'aurait rien changé à la cause racine : ni à la faille SSRF elle-même dans le WAF, ni aux permissions IAM excessives du rôle de l'instance, qui ont permis d'accéder à un volume massif de données S3 une fois les identifiants obtenus.
 
-\livrable{5}{Capture montrant que tout a bien été détruit}
+\livrable
+{4}
+{Question de fond --- IMDSv2 et l'affaire Capital One
+(mars 2019) --- 5 lignes maximum}
 
-\texttt{terraform destroy} exécuté et confirmé :
 
-\screenshot{image9.png}{0.7}{\texttt{terraform destroy} : suppression complète des 7 ressources créées.}
+IMDSv2
+(\texttt{http\_tokens = "required"})
+aurait bloqué la technique exacte utilisée :
+la faille SSRF n'autorisait que des requêtes GET,
+incapables de forger le token de session exigé par une
+requête PUT préalable pour interroger le service de
+métadonnées et en extraire les identifiants IAM.
 
-Les 7 ressources créées (instance, security group, association de table de routage, table de routage, subnet, internet gateway, VPC) ont été supprimées. Le bucket S3 de backend n'est pas concerné (créé manuellement en Partie A, non géré par ce state). L'accès au module de facturation AWS étant refusé pour ce compte étudiant (droits IAM restreints), la preuve retenue est la sortie explicite de \texttt{terraform destroy} confirmant la suppression des 7 ressources facturables.
+En revanche, IMDSv2 n'aurait rien changé à la cause racine :
+ni à la faille SSRF elle-même dans le WAF,
+ni aux permissions IAM excessives du rôle de l'instance,
+qui ont permis d'accéder à un volume massif de données S3
+une fois les identifiants obtenus.
+
+
+
+\livrable
+{5}
+{Capture montrant que tout a bien été détruit}
+
+
+\texttt{terraform destroy}
+exécuté et confirmé :
+
+
+\screenshot
+{image9.png}
+{0.7}
+{\texttt{terraform destroy} :
+suppression complète des 7 ressources créées.}
+
+
+Les 7 ressources créées
+(instance,
+security group,
+association de table de routage,
+table de routage,
+subnet,
+internet gateway,
+VPC)
+ont été supprimées.
+
+Le bucket S3 de backend n'est pas concerné
+(créé manuellement en Partie A,
+non géré par ce state).
+
+L'accès au module de facturation AWS étant refusé
+pour ce compte étudiant
+(droits IAM restreints),
+la preuve retenue est la sortie explicite de
+\texttt{terraform destroy}
+confirmant la suppression des 7 ressources facturables.
+
 
 \end{document}
