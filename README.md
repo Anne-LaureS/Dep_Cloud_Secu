@@ -1,6 +1,13 @@
-# Dep_Cloud_Secu — TP2 : Déploiement multi-cloud sécurisé (volet AWS)
+# 🟠 AWS — Déploiement Web Sécurisé avec Terraform
 
-Ce projet déploie sur AWS, via Terraform, un serveur web nginx accessible publiquement avec un état distant chiffré, un accès SSH restreint, et les contrôles de sécurité imposés (IMDSv2, disque chiffré). Il démontre également la détection d'une dérive de configuration (configuration drift) via `terraform plan`.
+Déploiement complet d'une infrastructure web sur AWS (VPC, EC2, Security Group) via Terraform, avec état distant chiffré, accès SSH restreint et détection de dérive de configuration. Région : eu-west-3 (Paris).
+
+![AWS](https://img.shields.io/badge/AWS-EC2-FF9900?style=flat-square&logo=amazonaws&logoColor=white)
+![Terraform](https://img.shields.io/badge/Terraform-IaC-7B42BC?style=flat-square&logo=terraform&logoColor=white)
+![Security](https://img.shields.io/badge/Security-IMDSv2-2E7D32?style=flat-square&logo=shieldcheck&logoColor=white)
+![Encrypted State](https://img.shields.io/badge/State-Encrypted%20S3-1565C0?style=flat-square&logo=amazons3&logoColor=white)
+![Drift Detection](https://img.shields.io/badge/Drift-Detection-C62828?style=flat-square&logo=terraform&logoColor=white)
+![Nginx](https://img.shields.io/badge/Web%20Server-nginx-009639?style=flat-square&logo=nginx&logoColor=white)
 
 ## 📁 Structure du dépôt
 
