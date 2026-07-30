@@ -4,11 +4,17 @@ Déploiement complet d'une infrastructure web sur AWS (VPC, EC2, Security Group)
 
 ![AWS](https://img.shields.io/badge/AWS-EC2-FF9900?style=flat-square&logo=amazonaws&logoColor=white)
 ![Terraform](https://img.shields.io/badge/Terraform-IaC-7B42BC?style=flat-square&logo=terraform&logoColor=white)
-![Security](https://img.shields.io/badge/Security-IMDSv2-2E7D32?style=flat-square&logo=shieldcheck&logoColor=white)
+![Security](https://img.shields.io/badge/Security-IMDSv2-2E7D32?style=flat-square)
 ![Encrypted State](https://img.shields.io/badge/State-Encrypted%20S3-1565C0?style=flat-square&logo=amazons3&logoColor=white)
 ![Drift Detection](https://img.shields.io/badge/Drift-Detection-C62828?style=flat-square&logo=terraform&logoColor=white)
 ![Nginx](https://img.shields.io/badge/Web%20Server-nginx-009639?style=flat-square&logo=nginx&logoColor=white)
+![Ansible](https://img.shields.io/badge/Config-Ansible-000000?style=flat-square&logo=ansible&logoColor=white)
+![Secrets Scan](https://img.shields.io/badge/Secrets-gitleaks-2E7D32?style=flat-square)
+![Misconfig Scan](https://img.shields.io/badge/Misconfig-Trivy-2E7D32?style=flat-square)
+
 [![Terraform CI](https://github.com/Anne-LaureS/Dep_Cloud_Secu/actions/workflows/terraform-pipeline.yml/badge.svg)](https://github.com/Anne-LaureS/Dep_Cloud_Secu/actions/workflows/terraform-pipeline.yml)
+[![Make Pipeline](https://github.com/Anne-LaureS/Dep_Cloud_Secu/actions/workflows/make-pipeline.yml/badge.svg)](https://github.com/Anne-LaureS/Dep_Cloud_Secu/actions/workflows/make-pipeline.yml)
+[![Destroy](https://github.com/Anne-LaureS/Dep_Cloud_Secu/actions/workflows/destroy-pipeline.yml/badge.svg)](https://github.com/Anne-LaureS/Dep_Cloud_Secu/actions/workflows/destroy-pipeline.yml)
 
 ## 📁 Structure du dépôt
 
