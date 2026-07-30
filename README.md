@@ -62,23 +62,15 @@ Une modification manuelle du Security Group dans la console AWS (ouverture du po
 
 ## ⚙️🔁 Intégration continue (CI/CD)
 
-Ce dépôt utilise GitHub Actions (`.github/workflows/terraform-pipeline.yml`) pour valider et déployer l'infrastructure.
+Ce dépôt propose **trois workflows GitHub Actions** distincts, selon le besoin :
 
-### 🛠️ Ce que fait le pipeline
+| Workflow | Déclenchement | Comportement |
+|---|---|---|
+| `terraform-pipeline.yml` | `push` / `workflow_dispatch` | Validations → Plan → **Apply avec approbation manuelle** |
+| `make-pipeline.yml` | `workflow_dispatch` | Pipeline entièrement automatisé (via `make`) : validations → provisionnement conditionnel → inventaire → déploiement Ansible, **sans intervention manuelle** |
+| `destroy-pipeline.yml` | `workflow_dispatch` | Détruit l'infrastructure — protégé par une confirmation textuelle obligatoire (`DESTROY`) |
 
-À chaque `push` sur `main`/`develop` (ou via une Pull Request) :
-
-1. **Format & Lint** — `terraform fmt -check` et `tflint`
-2. **Security** — `gitleaks` (détection de secrets) et `trivy` (misconfigurations AWS)
-3. **Terraform Plan** — génère un plan d'exécution, archivé en artefact téléchargeable (aucune modification réelle à ce stade)
-
-### 🚦 Déployer réellement (Terraform Apply)
-
-L'`apply` **ne se lance jamais automatiquement**. Pour déployer :
-
-1. Onglet **Actions** → **Terraform CI** → **Run workflow**
-2. Attendez que `Terraform Plan` réussisse
-3. Une approbation manuelle est requise avant l'`apply` — validez-la depuis l'écran d'approbation qui apparaît sur le run
+Les trois pipelines partagent le même état Terraform (backend S3) : peu importe lequel a créé l'infrastructure, `destroy-pipeline.yml` la détruit proprement.
 
 ### 🔑 Secrets requis (Settings → Secrets and variables → Actions)
 
@@ -87,10 +79,11 @@ L'`apply` **ne se lance jamais automatiquement**. Pour déployer :
 | `AWS_ACCESS_KEY_ID` | Clé d'accès IAM |
 | `AWS_SECRET_ACCESS_KEY` | Clé secrète IAM associée |
 | `MY_IP` | IP publique autorisée en SSH (`var.my_ip`) |
+| `ANSIBLE_SSH_PRIVATE_KEY` | Clé privée SSH pour le déploiement Ansible |
 
 ### ⚠️ Risques de sécurité acceptés
 
-Certaines alertes Trivy sont documentées et ignorées volontairement dans `envs/dev-aws/.trivyignore` (avec justification en commentaire) plutôt que masquées silencieusement — voir ce fichier pour le détail.
+Documentés et justifiés dans `envs/dev-aws/.trivyignore` : sortie réseau nécessaire (HTTP/HTTPS), IP publique de l'instance (architecture web publique voulue), et accès SSH temporairement élargi pour permettre au runner CI de déployer via Ansible.
 
 ## ✍️ Auteur
 
