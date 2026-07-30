@@ -51,12 +51,45 @@ terraform apply "dev.tfplan"
 - **État distant chiffré** : backend S3 avec `encrypt = true`, `use_lockfile = true`, bucket en Block Public Access + SSE-S3 + versioning.
 - **IMDSv2 obligatoire** : `metadata_options.http_tokens = "required"` sur l'instance EC2.
 - **Disque racine chiffré** : `root_block_device.encrypted = true`.
-- **Accès SSH restreint** : ouvert uniquement à l'adresse IP publique de l'opérateur (`/32`), jamais à `0.0.0.0/0`.
+- **Accès SSH restreint (ingress)** : ouvert uniquement à l'adresse IP publique de l'opérateur (`/32`), jamais à `0.0.0.0/0`.
+- **Sortie HTTPS ouverte (egress)** : le trafic sortant est restreint au port 443 (pas tous les ports/protocoles), mais reste ouvert vers `0.0.0.0/0` — nécessaire pour les mises à jour système et dépôts de paquets. Risque documenté et accepté explicitement dans `envs/dev-aws/.trivyignore` (règle `AWS-0104`).
 - **Secrets non versionnés** : `.gitignore` exclut `.terraform/`, `*.tfstate*`, `*.tfplan`, `*.tfvars`.
 
 ## 🧪 Détection de dérive
 
 Une modification manuelle du Security Group dans la console AWS (ouverture du port 22 à `0.0.0.0/0`) a été effectuée volontairement pour tester la détection de dérive. `terraform plan` a correctement identifié l'écart entre l'état réel et le code, et `terraform apply` a permis de restaurer la configuration sécurisée.
+
+## Intégration continue (CI/CD)
+
+Ce dépôt utilise GitHub Actions (`.github/workflows/terraform-pipeline.yml`) pour valider et déployer l'infrastructure.
+
+### Ce que fait le pipeline
+
+À chaque `push` sur `main`/`develop` (ou via une Pull Request) :
+
+1. **Format & Lint** — `terraform fmt -check` et `tflint`
+2. **Security** — `gitleaks` (détection de secrets) et `trivy` (misconfigurations AWS)
+3. **Terraform Plan** — génère un plan d'exécution, archivé en artefact téléchargeable (aucune modification réelle à ce stade)
+
+### Déployer réellement (Terraform Apply)
+
+L'`apply` **ne se lance jamais automatiquement**. Pour déployer :
+
+1. Onglet **Actions** → **Terraform CI** → **Run workflow**
+2. Attendez que `Terraform Plan` réussisse
+3. Une approbation manuelle est requise avant l'`apply` — validez-la depuis l'écran d'approbation qui apparaît sur le run
+
+### Secrets requis (Settings → Secrets and variables → Actions)
+
+| Secret | Description |
+|---|---|
+| `AWS_ACCESS_KEY_ID` | Clé d'accès IAM |
+| `AWS_SECRET_ACCESS_KEY` | Clé secrète IAM associée |
+| `MY_IP` | IP publique autorisée en SSH (`var.my_ip`) |
+
+### Risques de sécurité acceptés
+
+Certaines alertes Trivy sont documentées et ignorées volontairement dans `envs/dev-aws/.trivyignore` (avec justification en commentaire) plutôt que masquées silencieusement — voir ce fichier pour le détail.
 
 ## ✍️ Auteur
 
