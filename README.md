@@ -1,6 +1,6 @@
-# 🟠 AWS — Déploiement Web Sécurisé avec Terraform
+# 🟠 AWS — Déploiement Web Sécurisé avec Terraform, Make & Ansible
 
-Déploiement complet d'une infrastructure web sur AWS (VPC, EC2, Security Group) via Terraform, avec état distant chiffré, accès SSH restreint et détection de dérive de configuration. Région : eu-west-3 (Paris).
+Déploiement et configuration complets d'une infrastructure web sur AWS (VPC, EC2, Security Group), provisionnée par Terraform et configurée par Ansible, avec deux pipelines CI/CD au choix (approbation manuelle ou automatisation complète via `make`). État distant chiffré, accès SSH restreint et détection de dérive de configuration. Région : eu-west-3 (Paris).
 
 ![AWS](https://img.shields.io/badge/AWS-EC2-FF9900?style=flat-square&logo=amazonaws&logoColor=white)
 ![Terraform](https://img.shields.io/badge/Terraform-IaC-7B42BC?style=flat-square&logo=terraform&logoColor=white)
