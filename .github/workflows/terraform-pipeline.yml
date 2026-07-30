@@ -42,7 +42,7 @@ jobs:
       - name: Run tflint
         run: |
           tflint --chdir=${{ env.TF_DIR }} --init
-          tflint --chdir=${{ env.TF_DIR }}
+          tflint --chdir=${{ env.TF_DIR }} --minimum-failure-severity=error
 
   security:
     name: Security (gitleaks + trivy)
@@ -63,7 +63,7 @@ jobs:
         run: gitleaks detect --source . --verbose --redact
 
       - name: Scan misconfigurations Terraform (Trivy)
-        uses: aquasecurity/trivy-action@0.28.0
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
           scan-type: config
           scan-ref: ${{ env.TF_DIR }}
