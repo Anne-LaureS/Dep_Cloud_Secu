@@ -1,0 +1,71 @@
+name: Make Pipeline (TP - automatisation complète)
+
+on:
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+env:
+  TF_VERSION: "1.11.0"
+  TF_VAR_my_ip: ${{ secrets.MY_IP }}
+
+jobs:
+  pipeline:
+    name: Pipeline complet (make)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-west-3
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+
+      - name: Setup tflint
+        uses: terraform-linters/setup-tflint@v4
+        with:
+          tflint_version: v0.53.0
+
+      - name: Installer trivy (binaire épinglé, pas l'Action tierce)
+        run: |
+          curl -sSL https://github.com/aquasecurity/trivy/releases/download/v0.72.0/trivy_0.72.0_Linux-64bit.tar.gz -o /tmp/trivy.tar.gz
+          sudo tar xzf /tmp/trivy.tar.gz -C /usr/local/bin trivy
+          trivy --version
+
+      - name: Installer Ansible
+        run: pip install ansible
+
+      - name: Préparer la clé privée SSH
+        run: |
+          echo "${{ secrets.ANSIBLE_SSH_PRIVATE_KEY }}" > /tmp/ansible_key
+          chmod 600 /tmp/ansible_key
+
+      - name: Étape 1 — fmt
+        run: make fmt
+
+      - name: Étape 1 — tflint
+        run: make tflint
+
+      - name: Étape 1 — trivy
+        run: make trivy
+
+      - name: Étape 2 — provisionnement (uniquement si l'étape 1 est passée)
+        run: |
+          make init
+          make apply
+
+      - name: Étape 3 — génération de l'inventaire Ansible
+        run: make inventory
+
+      - name: Étape 4 — configuration via Ansible
+        run: make deploy
