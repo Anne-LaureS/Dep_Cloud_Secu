@@ -59,11 +59,11 @@ terraform apply "dev.tfplan"
 
 Une modification manuelle du Security Group dans la console AWS (ouverture du port 22 à `0.0.0.0/0`) a été effectuée volontairement pour tester la détection de dérive. `terraform plan` a correctement identifié l'écart entre l'état réel et le code, et `terraform apply` a permis de restaurer la configuration sécurisée.
 
-## Intégration continue (CI/CD)
+## ⚙️🔁 Intégration continue (CI/CD)
 
 Ce dépôt utilise GitHub Actions (`.github/workflows/terraform-pipeline.yml`) pour valider et déployer l'infrastructure.
 
-### Ce que fait le pipeline
+### 🛠️ Ce que fait le pipeline
 
 À chaque `push` sur `main`/`develop` (ou via une Pull Request) :
 
@@ -71,7 +71,7 @@ Ce dépôt utilise GitHub Actions (`.github/workflows/terraform-pipeline.yml`) p
 2. **Security** — `gitleaks` (détection de secrets) et `trivy` (misconfigurations AWS)
 3. **Terraform Plan** — génère un plan d'exécution, archivé en artefact téléchargeable (aucune modification réelle à ce stade)
 
-### Déployer réellement (Terraform Apply)
+### 🚦 Déployer réellement (Terraform Apply)
 
 L'`apply` **ne se lance jamais automatiquement**. Pour déployer :
 
@@ -79,7 +79,7 @@ L'`apply` **ne se lance jamais automatiquement**. Pour déployer :
 2. Attendez que `Terraform Plan` réussisse
 3. Une approbation manuelle est requise avant l'`apply` — validez-la depuis l'écran d'approbation qui apparaît sur le run
 
-### Secrets requis (Settings → Secrets and variables → Actions)
+### 🔑 Secrets requis (Settings → Secrets and variables → Actions)
 
 | Secret | Description |
 |---|---|
@@ -87,7 +87,7 @@ L'`apply` **ne se lance jamais automatiquement**. Pour déployer :
 | `AWS_SECRET_ACCESS_KEY` | Clé secrète IAM associée |
 | `MY_IP` | IP publique autorisée en SSH (`var.my_ip`) |
 
-### Risques de sécurité acceptés
+### ⚠️ Risques de sécurité acceptés
 
 Certaines alertes Trivy sont documentées et ignorées volontairement dans `envs/dev-aws/.trivyignore` (avec justification en commentaire) plutôt que masquées silencieusement — voir ce fichier pour le détail.
 
