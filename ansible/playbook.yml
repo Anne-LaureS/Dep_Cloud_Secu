@@ -3,6 +3,10 @@
   hosts: webservers
   become: true
   tasks:
+    - name: Attendre la fin de cloud-init (évite les conflits de verrou apt)
+      command: cloud-init status --wait
+      changed_when: false
+
     - name: Mettre à jour le cache apt
       apt:
         update_cache: true
