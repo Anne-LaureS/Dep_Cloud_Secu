@@ -3,6 +3,16 @@
   hosts: webservers
   become: true
   tasks:
+    - name: Mettre à jour le cache apt
+      apt:
+        update_cache: true
+        cache_valid_time: 3600
+
+    - name: Installer nginx
+      apt:
+        name: nginx
+        state: present
+
     - name: Copier index.html dans le webroot nginx
       copy:
         src: index.html
@@ -11,7 +21,7 @@
         group: www-data
         mode: "0644"
 
-    - name: S'assurer que nginx est démarré
+    - name: S'assurer que nginx est démarré et activé
       service:
         name: nginx
         state: started
