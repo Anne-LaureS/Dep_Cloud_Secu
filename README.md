@@ -8,6 +8,7 @@ Déploiement complet d'une infrastructure web sur AWS (VPC, EC2, Security Group)
 ![Encrypted State](https://img.shields.io/badge/State-Encrypted%20S3-1565C0?style=flat-square&logo=amazons3&logoColor=white)
 ![Drift Detection](https://img.shields.io/badge/Drift-Detection-C62828?style=flat-square&logo=terraform&logoColor=white)
 ![Nginx](https://img.shields.io/badge/Web%20Server-nginx-009639?style=flat-square&logo=nginx&logoColor=white)
+[![Terraform CI](https://github.com/Anne-LaureS/Dep_Cloud_Secu/actions/workflows/terraform-pipeline.yml/badge.svg)](https://github.com/Anne-LaureS/Dep_Cloud_Secu/actions/workflows/terraform-pipeline.yml)
 
 ## 📁 Structure du dépôt
 
