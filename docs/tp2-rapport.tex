@@ -240,7 +240,8 @@ de même que \texttt{*.tfstate*},
 
 IP publique de l'opérateur récupérée via
 \texttt{curl -s https://checkip.amazonaws.com}
-(\texttt{37.70.218.118}),
+(\texttt{203.0.113.42}),
+\footnote{L'IP \texttt{203.0.113.42} est une adresse anonymisée (plage TEST-NET-3, RFC 5737) — l'IP publique réelle a été remplacée avant publication.}
 utilisée pour restreindre l'accès SSH.
 
 \subsection{Ressources écrites}
@@ -384,7 +385,7 @@ Modification manuelle dans la console AWS
 \texttt{tp2-web-sg} $\rightarrow$ Inbound rules) :
 
 règle SSH (port 22) changée de
-\texttt{37.70.218.118/32}
+\texttt{203.0.113.42/32}
 vers
 \texttt{0.0.0.0/0},
 reproduisant le geste risqué d'un opérateur

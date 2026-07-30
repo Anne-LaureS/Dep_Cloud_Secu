@@ -21,7 +21,8 @@ Backend Terraform configuré avec `encrypt = true` et `use_lockfile = true` (Ter
 
 ## 2. Déploiement AWS (Partie B)
 
-IP publique de l'opérateur récupérée via `curl -s https://checkip.amazonaws.com` (`37.70.218.118`), utilisée pour restreindre l'accès SSH.
+IP publique de l'opérateur récupérée via `curl -s https://checkip.amazonaws.com` (`203.0.113.42`), utilisée pour restreindre l'accès SSH.
+> **Note** : l'IP `203.0.113.42` ci-dessus est une adresse anonymisée (plage `TEST-NET-3`, réservée par l'IANA à la documentation, RFC 5737) — l'IP publique réelle utilisée lors du TP a été remplacée avant publication de ce dépôt.
 
 ### 2.1 Ressources écrites
 
@@ -70,7 +71,7 @@ Accès HTTP vérifié avec succès dans un navigateur à l'adresse `http://52.47
 
 ### 3.1 Dérive introduite manuellement
 
-Modification manuelle dans la console AWS (EC2 → Security Groups → tp2-web-sg → Inbound rules) : règle SSH (port 22) changée de `37.70.218.118/32` vers `0.0.0.0/0`, reproduisant le geste risqué d'un opérateur pressé en production.
+Modification manuelle dans la console AWS (EC2 → Security Groups → tp2-web-sg → Inbound rules) : règle SSH (port 22) changée de `203.0.113.42/32` vers `0.0.0.0/0`, reproduisant le geste risqué d'un opérateur pressé en production.
 
 ---
 
