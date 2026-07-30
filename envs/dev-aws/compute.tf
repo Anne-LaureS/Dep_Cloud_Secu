@@ -12,7 +12,7 @@ data "aws_ami" "ubuntu" {
 }
 
 resource "aws_key_pair" "deployer" {
-  key_name   = "ALS_keypair"
+  key_name   = "ALS_keypair_depcloudsecu"
   public_key = file("${path.module}/ansible-key.pub")
 }
 
