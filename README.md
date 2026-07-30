@@ -96,13 +96,17 @@ make destroy
 - **État distant chiffré** : backend S3 avec `encrypt = true`, `use_lockfile = true`, bucket en Block Public Access + SSE-S3 + versioning.
 - **IMDSv2 obligatoire** : `metadata_options.http_tokens = "required"` sur l'instance EC2.
 - **Disque racine chiffré** : `root_block_device.encrypted = true`.
-- **Accès SSH restreint (ingress)** : ouvert uniquement à l'adresse IP publique de l'opérateur (`/32`), jamais à `0.0.0.0/0`.
-- **Sortie HTTPS ouverte (egress)** : le trafic sortant est restreint au port 443 (pas tous les ports/protocoles), mais reste ouvert vers `0.0.0.0/0` — nécessaire pour les mises à jour système et dépôts de paquets. Risque documenté et accepté explicitement dans `envs/dev-aws/.trivyignore` (règle `AWS-0104`).
-- **Secrets non versionnés** : `.gitignore` exclut `.terraform/`, `*.tfstate*`, `*.tfplan`, `*.tfvars`.
+- **Accès SSH nominatif** : restreint à l'IP publique de l'opérateur (`/32`) pour l'usage courant.
+- **Accès SSH temporaire pour la CI** : une seconde règle ouvre le port 22 à `0.0.0.0/0`, nécessaire au runner GitHub Actions (IP dynamique) pour déployer via Ansible. Risque documenté et accepté dans `.trivyignore` (`AWS-0107`).
+- **Dashboard Netdata (19999)** : restreint à l'IP publique de l'opérateur, jamais ouvert publiquement.
+- **Sortie réseau (egress)** : restreinte aux ports 80 et 443 (HTTP/HTTPS), jamais à l'ensemble des protocoles — nécessaire pour `apt-get` (mises à jour, dépôts de paquets). Risque documenté dans `.trivyignore` (`AWS-0104`).
+- **Secrets non versionnés** : `.gitignore` exclut `.terraform/`, `*.tfstate*`, `*.tfplan`, `*.tfvars`. La clé privée SSH de déploiement (`ANSIBLE_SSH_PRIVATE_KEY`) est stockée exclusivement en secret GitHub, jamais commitée.
 
 ## 🧪 Détection de dérive
 
-Une modification manuelle du Security Group dans la console AWS (ouverture du port 22 à `0.0.0.0/0`) a été effectuée volontairement pour tester la détection de dérive. `terraform plan` a correctement identifié l'écart entre l'état réel et le code, et `terraform apply` a permis de restaurer la configuration sécurisée.
+**Test historique** : une modification manuelle du Security Group dans la console AWS (ouverture ponctuelle du port 22 à `0.0.0.0/0`, hors du code) a été effectuée volontairement pour valider la détection de dérive. `terraform plan` a correctement identifié l'écart, et `terraform apply` a restauré la configuration attendue par le code.
+
+**Note importante** : cette règle SSH temporaire pour la CI (ci-dessus) est, elle, **intentionnellement présente dans le code** — ce n'est pas une dérive à corriger, mais un choix d'architecture assumé et documenté, distinct du test ponctuel décrit ici.
 
 ## ⚙️🔁 Intégration continue (CI/CD)
 
