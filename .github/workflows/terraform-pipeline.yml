@@ -97,7 +97,9 @@ jobs:
         run: terraform -chdir=${{ env.TF_DIR }} validate
 
       - name: Terraform plan
-        run: terraform -chdir=${{ env.TF_DIR }} plan -out=tfplan -no-color
+        env:
+          TF_VAR_my_ip: ${{ secrets.MY_IP }}
+        run: terraform -chdir=${{ env.TF_DIR }} plan -input=false -out=tfplan -no-color
 
       - name: Upload plan artifact
         uses: actions/upload-artifact@v4
