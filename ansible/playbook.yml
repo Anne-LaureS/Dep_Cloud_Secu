@@ -27,6 +27,17 @@
         group: www-data
         mode: "0644"
 
+    - name: Vérifier si Netdata est déjà installé
+      stat:
+        path: /usr/sbin/netdata
+      register: netdata_check
+
+    - name: Installer Netdata (monitoring temps réel)
+      shell: bash <(curl -SsL https://my-netdata.io/kickstart.sh) --non-interactive
+      args:
+        executable: /bin/bash
+      when: not netdata_check.stat.exists
+
     - name: S'assurer que nginx est démarré et activé
       service:
         name: nginx
