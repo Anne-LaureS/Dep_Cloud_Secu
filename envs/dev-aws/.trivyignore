@@ -1,0 +1,7 @@
+# AWS-0104 : egress restreint au port 443 (HTTPS uniquement, pas tous les ports).
+# Risque accepté : serveur web public (VPC + Internet Gateway, route 0.0.0.0/0),
+# l'instance doit pouvoir sortir vers n'importe quel service Internet en HTTPS
+# (mises à jour système, dépôts de paquets, API tierces). L'ingress reste
+# strictement verrouillé : HTTP public sur le port 80 uniquement, SSH restreint
+# à var.my_ip/32.
+AWS-0104
