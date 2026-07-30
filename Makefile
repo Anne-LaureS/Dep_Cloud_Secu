@@ -6,7 +6,7 @@ ANSIBLE_DIR := ansible
 
 .DEFAULT_GOAL := help
 
-.PHONY: help fmt tflint trivy init apply inventory deploy
+.PHONY: help fmt tflint trivy init apply inventory deploy destroy
 
 help: ## Affiche cette aide (liste des cibles disponibles)
 	@echo "Cibles disponibles :"
@@ -38,3 +38,6 @@ inventory: ## Étape 3 — génère l'inventaire Ansible depuis l'IP de sortie T
 
 deploy: ## Étape 4 — configure la machine via Ansible
 	ansible-playbook -i $(ANSIBLE_DIR)/inventory.ini $(ANSIBLE_DIR)/playbook.yml
+
+destroy: ## Détruit l'infrastructure (irréversible)
+	terraform -chdir=$(TF_DIR) destroy -input=false -auto-approve
