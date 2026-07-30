@@ -1,0 +1,114 @@
+# .github/workflows/terraform-pipeline.yml
+name: Terraform CI
+
+on:
+  workflow_dispatch: {}
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+# Annule automatiquement un run en cours si un nouveau push arrive sur la même branche/PR
+# (évite de faire tourner deux plans concurrents sur le même état Terraform)
+concurrency:
+  group: terraform-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  TF_DIR: terraform
+  TF_VERSION: "1.9.5"
+
+jobs:
+  # ==========================================================
+  # 1. Format + Lint
+  # ==========================================================
+  fmt-lint:
+    name: Format & Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+
+      - name: Terraform fmt (vérification uniquement, ne corrige rien ici)
+        run: terraform -chdir=${{ env.TF_DIR }} fmt -check -recursive
+
+      - name: Setup tflint
+        uses: terraform-linters/setup-tflint@v4
+        with:
+          tflint_version: v0.53.0
+
+      - name: Run tflint
+        run: |
+          tflint --chdir=${{ env.TF_DIR }} --init
+          tflint --chdir=${{ env.TF_DIR }}
+
+  # ==========================================================
+  # 2. Sécurité : secrets + misconfigurations
+  # ==========================================================
+  security:
+    name: Security (gitleaks + trivy)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # historique complet, indispensable pour que gitleaks scanne tous les commits
+
+      # Installation directe du binaire plutôt que l'action officielle :
+      # évite la licence payante exigée par gitleaks-action sur les dépôts privés.
+      - name: Install gitleaks
+        run: |
+          curl -sSL https://github.com/gitleaks/gitleaks/releases/download/v8.21.2/gitleaks_8.21.2_linux_x64.tar.gz \
+            -o /tmp/gitleaks.tar.gz
+          sudo tar xzf /tmp/gitleaks.tar.gz -C /usr/local/bin gitleaks
+          gitleaks version
+
+      - name: Scan secrets (historique complet)
+        run: gitleaks detect --source . --verbose --redact
+
+      - name: Scan misconfigurations Terraform (Trivy)
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          scan-type: config
+          scan-ref: ${{ env.TF_DIR }}
+          severity: HIGH,CRITICAL
+          exit-code: 1   # fait échouer le job si une faille HIGH/CRITICAL est trouvée
+
+  # ==========================================================
+  # 3. Terraform plan — seulement si lint ET sécurité sont OK
+  # ==========================================================
+  plan:
+    name: Terraform Plan
+    needs: [fmt-lint, security]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+
+      - name: Terraform init
+        run: terraform -chdir=${{ env.TF_DIR }} init
+
+      - name: Terraform validate
+        run: terraform -chdir=${{ env.TF_DIR }} validate
+
+      - name: Terraform plan
+        run: terraform -chdir=${{ env.TF_DIR }} plan -out=tfplan -no-color
+
+      # Le plan est mis à disposition en artefact téléchargeable,
+      # mais jamais appliqué automatiquement : l'apply reste une action humaine et volontaire.
+      - name: Upload plan artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: tfplan-${{ github.sha }}
+          path: ${{ env.TF_DIR }}/tfplan
+          retention-days: 5
