@@ -69,6 +69,7 @@ jobs:
           scan-ref: ${{ env.TF_DIR }}
           severity: HIGH,CRITICAL
           exit-code: 1
+          trivyignores: ${{ env.TF_DIR }}/.trivyignore
 
   plan:
     name: Terraform Plan

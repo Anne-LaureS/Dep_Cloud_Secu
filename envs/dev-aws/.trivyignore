@@ -5,3 +5,8 @@
 # strictement verrouillé : HTTP public sur le port 80 uniquement, SSH restreint
 # à var.my_ip/32.
 AWS-0104
+
+# AWS-0164 : le subnet public associe une IP publique (map_public_ip_on_launch = true).
+# Risque accepté : architecture voulue pour un serveur web accessible depuis Internet
+# via une Internet Gateway (route 0.0.0.0/0 sur la table de routage publique).
+AWS-0164
