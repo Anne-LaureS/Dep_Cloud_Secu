@@ -20,15 +20,30 @@ Déploiement et configuration complets d'une infrastructure web sur AWS (VPC, EC
 
 ```
 Dep_Cloud_Secu/
+├── .github/
+│   └── workflows/
+│       ├── terraform-pipeline.yml   # Validations → Plan → Apply (approbation manuelle)
+│       ├── make-pipeline.yml        # Pipeline entièrement automatisé via make
+│       └── destroy-pipeline.yml     # Destruction protégée par confirmation
 ├── envs/
 │   └── dev-aws/
-│       ├── backend.tf        # Backend S3 chiffré + verrouillage natif
-│       ├── variables.tf      # Variables (IP autorisée, type d'instance)
-│       ├── network.tf        # VPC, IGW, subnet public, route table
-│       ├── security.tf       # Security Group (HTTP public, SSH restreint)
-│       ├── compute.tf        # Instance EC2 (nginx, IMDSv2, disque chiffré)
-│       ├── outputs.tf        # IP publique de l'instance
+│       ├── backend.tf
+│       ├── variables.tf
+│       ├── network.tf
+│       ├── security.tf
+│       ├── compute.tf
+│       ├── outputs.tf
+│       ├── ansible-key.pub          # Clé publique injectée dans l'instance
+│       ├── .trivyignore             # Risques évalués et acceptés (documentés)
 │       └── .terraform.lock.hcl
+├── ansible/
+│   ├── playbook.yml                 # Configure nginx, la page web, Netdata
+│   └── index.html                   # Page servie par nginx
+├── docs/
+│   ├── tp2-rapport.md
+│   ├── tp2-rapport.tex
+│   └── img/                         # Captures d'écran du rapport
+├── Makefile                         # Cibles fmt/tflint/trivy/init/apply/inventory/deploy/destroy
 ├── .gitignore
 └── README.md
 ```
