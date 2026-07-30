@@ -10,3 +10,9 @@ AWS-0104
 # Risque accepté : architecture voulue pour un serveur web accessible depuis Internet
 # via une Internet Gateway (route 0.0.0.0/0 sur la table de routage publique).
 AWS-0164
+
+# AWS-0107 : SSH ouvert temporairement à 0.0.0.0/0 pour permettre au runner
+# GitHub Actions (IP dynamique, non prévisible) de déployer via Ansible.
+# Risque accepté et temporaire pour ce TP — la règle SSH restreinte à var.my_ip
+# reste également en place en parallèle.
+AWS-0107
