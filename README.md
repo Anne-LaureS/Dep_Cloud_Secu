@@ -56,16 +56,39 @@ Dep_Cloud_Secu/
 
 ## 🚀 Démarrage
 
+### Option recommandée — via GitHub Actions
+
+1. Configurez les 4 secrets requis (`Settings → Secrets and variables → Actions`) : `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `MY_IP`, `ANSIBLE_SSH_PRIVATE_KEY`
+2. Onglet **Actions** → choisissez un workflow :
+   - **`make-pipeline.yml`** — déploiement complet automatisé (validations → EC2 → Ansible), en un clic
+   - **`terraform-pipeline.yml`** — même chose, avec approbation manuelle avant l'`apply`
+3. **Run workflow**
+
+### Option locale (développement / débogage)
+
 ```bash
 git clone <url-du-depot>
-cd Dep_Cloud_Secu/envs/dev-aws
+cd Dep_Cloud_Secu
+
+# Générer une paire de clés SSH pour l'instance (si pas déjà fait)
+ssh-keygen -t ed25519 -f ~/.ssh/ansible-key -N ""
+cp ~/.ssh/ansible-key.pub envs/dev-aws/ansible-key.pub
 
 # Créer un terraform.tfvars local (non versionné) avec votre IP publique :
-# my_ip = "VOTRE_IP_PUBLIQUE"
+# echo 'my_ip = "VOTRE_IP_PUBLIQUE"' > envs/dev-aws/terraform.tfvars
 
-terraform init
-terraform plan -out=dev.tfplan
-terraform apply "dev.tfplan"
+export TF_VAR_my_ip="VOTRE_IP_PUBLIQUE"
+make init
+make apply
+make inventory
+make deploy
+```
+
+### Détruire l'infrastructure
+
+Via GitHub Actions (`destroy-pipeline.yml`, confirmation `DESTROY` requise), ou en local :
+```bash
+make destroy
 ```
 
 ## 🔒 Sécurité
