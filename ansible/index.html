@@ -2,81 +2,367 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>Dep_Cloud_Secu — Infrastructure Sécurisée</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dep_Cloud_Secu — Rapport d'audit d'infrastructure</title>
 <style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+  :root {
+    --ink: #10151f;
+    --ink-soft: #1b2432;
+    --paper: #f4f5f2;
+    --paper-line: #dcdfd6;
+    --slate: #5b6472;
+    --accent: #0f8a6e;
+    --accent-soft: #e4f3ee;
+    --warn: #b5852b;
+  }
+
+  * { box-sizing: border-box; }
+
   body {
-    background-color: #0d1117;
-    color: #c9d1d9;
-    font-family: 'Consolas', 'Courier New', monospace;
-    max-width: 800px;
-    margin: 60px auto;
-    padding: 20px;
-    line-height: 1.6;
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'IBM Plex Sans', sans-serif;
+    -webkit-font-smoothing: antialiased;
   }
-  h1 {
-    color: #58a6ff;
-    border-bottom: 2px solid #30363d;
-    padding-bottom: 10px;
+
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal {
+      animation: rise 0.6s ease both;
+    }
+    .reveal:nth-of-type(2) { animation-delay: 0.08s; }
+    .reveal:nth-of-type(3) { animation-delay: 0.16s; }
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
   }
-  .badge {
-    display: inline-block;
-    background-color: #238636;
-    color: #ffffff;
-    padding: 2px 10px;
-    border-radius: 4px;
-    font-size: 0.85em;
-    margin-right: 6px;
-  }
-  ul {
-    list-style: none;
-    padding-left: 0;
-  }
-  li {
-    margin: 8px 0;
-    padding-left: 24px;
+
+  a { color: var(--accent); }
+
+  header.cover {
+    background: var(--ink);
+    color: #eef1ee;
+    padding: 64px 8vw 56px;
     position: relative;
+    overflow: hidden;
   }
-  li::before {
-    content: "🔒";
+
+  .eyebrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.78rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #7fd6bd;
+    margin: 0 0 18px;
+  }
+
+  h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(2rem, 4.4vw, 3.1rem);
+    line-height: 1.08;
+    letter-spacing: -0.01em;
+    margin: 0 0 20px;
+    max-width: 16ch;
+  }
+
+  .cover-sub {
+    color: #b7bfc3;
+    font-size: 1.05rem;
+    max-width: 52ch;
+    margin: 0 0 40px;
+  }
+
+  .meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 32px;
+    border-top: 1px solid #303a4a;
+    padding-top: 24px;
+  }
+
+  .meta-item .label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #7c8894;
+    margin-bottom: 4px;
+  }
+
+  .meta-item .value {
+    font-size: 0.98rem;
+    color: #eef1ee;
+  }
+
+  .stamp {
     position: absolute;
-    left: 0;
-  }
-  .footer {
-    margin-top: 40px;
-    font-size: 0.85em;
-    color: #8b949e;
-    border-top: 1px solid #30363d;
-    padding-top: 15px;
-  }
-  code {
-    background-color: #161b22;
-    padding: 2px 6px;
+    top: 44px;
+    right: 8vw;
+    border: 2.5px solid var(--accent);
+    color: var(--accent);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    padding: 10px 16px;
     border-radius: 3px;
-    color: #79c0ff;
+    transform: rotate(-7deg);
+    background: rgba(15,138,110,0.08);
+    line-height: 1.5;
+    text-align: center;
+  }
+  .stamp strong { display: block; font-size: 0.95rem; letter-spacing: 0.04em; }
+
+  main {
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 56px 8vw 80px;
+  }
+
+  section + section { margin-top: 56px; }
+
+  h2 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.4rem;
+    margin: 0 0 6px;
+  }
+
+  .section-intro {
+    color: var(--slate);
+    font-size: 0.96rem;
+    max-width: 62ch;
+    margin: 0 0 24px;
+  }
+
+  table.findings {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.93rem;
+  }
+
+  table.findings th {
+    text-align: left;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--slate);
+    padding: 0 12px 10px;
+    border-bottom: 1px solid var(--paper-line);
+  }
+
+  table.findings td {
+    padding: 14px 12px;
+    border-bottom: 1px solid var(--paper-line);
+    vertical-align: top;
+  }
+
+  table.findings tr:last-child td { border-bottom: none; }
+
+  .control-name { font-weight: 600; }
+  .control-detail { color: var(--slate); font-size: 0.88rem; margin-top: 2px; }
+
+  .status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.74rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+  .status.pass { background: var(--accent-soft); color: var(--accent); }
+  .status.accepted { background: #fbf1e0; color: var(--warn); }
+
+  .risk-block {
+    background: #fbf1e0;
+    border-left: 3px solid var(--warn);
+    padding: 18px 22px;
+    margin-top: 24px;
+    font-size: 0.92rem;
+  }
+  .risk-block .risk-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--warn);
+    margin-bottom: 8px;
+  }
+
+  .pipeline {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0;
+    counter-reset: step;
+    border: 1px solid var(--paper-line);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .pipeline .step {
+    flex: 1 1 150px;
+    padding: 18px 16px;
+    border-right: 1px solid var(--paper-line);
+    background: #fff;
+  }
+  .pipeline .step:last-child { border-right: none; background: var(--accent-soft); }
+  .pipeline .step .tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.66rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--slate);
+    margin-bottom: 6px;
+  }
+  .pipeline .step .name { font-weight: 600; font-size: 0.92rem; }
+
+  footer {
+    border-top: 1px solid var(--paper-line);
+    margin-top: 64px;
+    padding: 28px 8vw 40px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--slate);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  @media (max-width: 640px) {
+    .stamp { position: static; margin-top: 28px; display: inline-block; transform: rotate(-4deg); }
+    .meta-row { gap: 20px; }
+    .pipeline .step { border-right: none; border-bottom: 1px solid var(--paper-line); }
   }
 </style>
 </head>
 <body>
-  <span class="badge">DEPLOYED</span><span class="badge">SECURED</span><span class="badge">MONITORED</span>
 
-  <h1>🛡️ Infrastructure Cloud Sécurisée — Impact Cybersécurité</h1>
+<header class="cover">
+  <p class="eyebrow reveal">Rapport d'engagement · Infrastructure cloud</p>
+  <h1 class="reveal">Posture de sécurité — Dep_Cloud_Secu</h1>
+  <p class="cover-sub reveal">Revue de l'infrastructure AWS provisionnée par Terraform et configurée par Ansible : contrôles appliqués, risques identifiés et décisions documentées.</p>
 
-  <p>Cette page a été déployée automatiquement par <strong>Ansible</strong>, orchestré depuis un pipeline <strong>GitHub Actions</strong>, sur une infrastructure provisionnée par <strong>Terraform</strong>.</p>
-
-  <h2>Mesures de sécurité appliquées</h2>
-  <ul>
-    <li>IMDSv2 obligatoire — protection contre le vol d'identifiants IAM (type Capital One 2019)</li>
-    <li>Disque racine chiffré (EBS, <code>encrypted = true</code>)</li>
-    <li>État Terraform chiffré et verrouillé nativement (backend S3, <code>use_lockfile</code>)</li>
-    <li>Détection de secrets avant chaque commit (<code>gitleaks</code>)</li>
-    <li>Scan de misconfigurations avant chaque déploiement (<code>trivy</code>)</li>
-    <li>Accès SSH restreint à une IP nominative (hors fenêtre de déploiement CI)</li>
-    <li>Déploiement <code>apply</code> soumis à approbation humaine obligatoire</li>
-  </ul>
-
-  <div class="footer">
-    Pipeline : Format &amp; Lint → Security → Terraform Plan → Terraform Apply → Deploy (Ansible)<br>
-    Région AWS : eu-west-3 (Paris)
+  <div class="meta-row reveal">
+    <div class="meta-item">
+      <div class="label">Périmètre</div>
+      <div class="value">VPC · EC2 · Security Group</div>
+    </div>
+    <div class="meta-item">
+      <div class="label">Région</div>
+      <div class="value">eu-west-3 (Paris)</div>
+    </div>
+    <div class="meta-item">
+      <div class="label">Chaîne d'outillage</div>
+      <div class="value">Terraform · gitleaks · Trivy · Ansible</div>
+    </div>
+    <div class="meta-item">
+      <div class="label">Déploiement</div>
+      <div class="value">GitHub Actions</div>
+    </div>
   </div>
+
+  <div class="stamp">Contrôles vérifiés<br><strong>PIPELINE CI/CD</strong></div>
+</header>
+
+<main>
+
+  <section>
+    <h2>Contrôles techniques</h2>
+    <p class="section-intro">Mesures appliquées directement sur l'infrastructure provisionnée, vérifiées à chaque exécution du pipeline.</p>
+    <table class="findings">
+      <thead>
+        <tr><th>Contrôle</th><th>Statut</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <div class="control-name">Jetons de session IMDSv2 obligatoires</div>
+            <div class="control-detail">Empêche l'exfiltration d'identifiants IAM via le service de métadonnées (vecteur Capital One, 2019).</div>
+          </td>
+          <td><span class="status pass">Conforme</span></td>
+        </tr>
+        <tr>
+          <td>
+            <div class="control-name">Chiffrement du volume racine</div>
+            <div class="control-detail">Disque EBS chiffré au repos (<code>encrypted = true</code>).</div>
+          </td>
+          <td><span class="status pass">Conforme</span></td>
+        </tr>
+        <tr>
+          <td>
+            <div class="control-name">État Terraform protégé</div>
+            <div class="control-detail">Backend S3 chiffré, verrouillage natif contre les écritures concurrentes.</div>
+          </td>
+          <td><span class="status pass">Conforme</span></td>
+        </tr>
+        <tr>
+          <td>
+            <div class="control-name">Détection de secrets avant commit</div>
+            <div class="control-detail">Analyse gitleaks de l'historique complet à chaque exécution.</div>
+          </td>
+          <td><span class="status pass">Conforme</span></td>
+        </tr>
+        <tr>
+          <td>
+            <div class="control-name">Scan de misconfiguration</div>
+            <div class="control-detail">Trivy évalue chaque plan avant application ; échec du pipeline sur toute faille HIGH/CRITICAL non documentée.</div>
+          </td>
+          <td><span class="status pass">Conforme</span></td>
+        </tr>
+        <tr>
+          <td>
+            <div class="control-name">Accès administrateur (SSH) nominatif</div>
+            <div class="control-detail">Restreint à une adresse IP déclarée, hors fenêtre de déploiement continu.</div>
+          </td>
+          <td><span class="status pass">Conforme</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>Risques évalués et acceptés</h2>
+    <p class="section-intro">Écarts identifiés par l'outillage, examinés puis documentés comme des choix d'architecture assumés — non masqués silencieusement.</p>
+    <div class="risk-block">
+      <div class="risk-title">AWS-0104 · Sortie réseau ouverte</div>
+      Le trafic sortant est nécessaire vers l'ensemble d'Internet (mises à jour système, dépôts de paquets). Restreint aux ports 80/443 uniquement — jamais à l'ensemble des protocoles.
+    </div>
+    <div class="risk-block">
+      <div class="risk-title">AWS-0164 · Adresse IP publique directe</div>
+      Choix d'architecture assumé : serveur web destiné à être accessible publiquement, derrière une passerelle Internet standard.
+    </div>
+  </section>
+
+  <section>
+    <h2>Chaîne de déploiement</h2>
+    <p class="section-intro">Chaque changement traverse ces étapes avant d'atteindre l'infrastructure réelle.</p>
+    <div class="pipeline">
+      <div class="step"><div class="tag">Étape</div><div class="name">Format &amp; Lint</div></div>
+      <div class="step"><div class="tag">Étape</div><div class="name">Sécurité</div></div>
+      <div class="step"><div class="tag">Étape</div><div class="name">Plan</div></div>
+      <div class="step"><div class="tag">Étape</div><div class="name">Apply (approbation requise)</div></div>
+      <div class="step"><div class="tag">Étape</div><div class="name">Déploiement Ansible</div></div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <span>Dep_Cloud_Secu — Mastère Cybersécurité &amp; Cloud Computing</span>
+  <span>Page générée par Ansible</span>
+</footer>
+
 </body>
 </html>
