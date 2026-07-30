@@ -140,3 +140,61 @@ jobs:
 
       - name: Terraform apply (applique exactement le plan approuvé)
         run: terraform -chdir=${{ env.TF_DIR }} apply -input=false tfplan
+
+  deploy-html:
+    name: Deploy HTML (Ansible)
+    needs: apply
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-west-3
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+
+      - name: Terraform init (pour lire l'output)
+        run: terraform -chdir=${{ env.TF_DIR }} init
+
+      - name: Récupérer l'IP publique de l'instance
+        id: get_ip
+        run: |
+          IP=$(terraform -chdir=${{ env.TF_DIR }} output -raw instance_public_ip)
+          echo "ip=$IP" >> "$GITHUB_OUTPUT"
+
+      - name: Installer Ansible
+        run: pip install ansible
+
+      - name: Préparer la clé privée SSH
+        run: |
+          echo "${{ secrets.ANSIBLE_SSH_PRIVATE_KEY }}" > /tmp/ansible_key
+          chmod 600 /tmp/ansible_key
+
+      - name: Générer l'inventaire dynamique
+        run: |
+          echo "[webservers]" > ansible/inventory.ini
+          echo "${{ steps.get_ip.outputs.ip }} ansible_user=ubuntu ansible_ssh_private_key_file=/tmp/ansible_key ansible_ssh_common_args='-o StrictHostKeyChecking=no'" >> ansible/inventory.ini
+
+      - name: Attendre que SSH soit prêt
+        run: |
+          for i in $(seq 1 20); do
+            if nc -z -w2 ${{ steps.get_ip.outputs.ip }} 22; then
+              echo "SSH prêt"
+              exit 0
+            fi
+            echo "SSH pas encore prêt, nouvelle tentative dans 5s..."
+            sleep 5
+          done
+          echo "SSH toujours indisponible après 100s"
+          exit 1
+
+      - name: Lancer le playbook Ansible
+        run: ansible-playbook -i ansible/inventory.ini ansible/playbook.yml
